@@ -1,0 +1,13 @@
+.events_list {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  padding: 2.4rem;
+}
+
+.event {
+  list-style: none;
+  cursor: pointer;
+}

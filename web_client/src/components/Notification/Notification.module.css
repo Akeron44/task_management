@@ -1,0 +1,19 @@
+.notification_big,
+.notification_small {
+  position: fixed;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 999999;
+  width: 70%;
+}
+
+.notification_big {
+  font-size: 1.4rem;
+  padding: 0.8rem 1.2rem;
+}
+
+.notification_small {
+  font-size: 1rem;
+  padding: 0.2rem 0.4rem;
+}

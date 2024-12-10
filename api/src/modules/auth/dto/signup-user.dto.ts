@@ -6,6 +6,7 @@ import {
   IsNumber,
   Min,
   Max,
+  Matches,
 } from 'class-validator';
 import { error_messages } from 'src/common/constants/error-messages';
 
@@ -25,7 +26,9 @@ export class SignupUserDto {
   email: string;
 
   @IsString()
-  @MinLength(8, { message: error_messages.MIN_CHARACTERS('Password', 8) })
-  @MaxLength(20, { message: error_messages.MAX_CHARACTERS('Password', 20) })
+  @MinLength(8)
+  @Matches(/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, {
+    message: error_messages.PASSWORD_COMPLEXITY,
+  })
   password: string;
 }
