@@ -1,4 +1,4 @@
-import { Button, DatePicker, Form, Input, Modal, Spin } from "antd";
+import { Button, DatePicker, Form, Input, Modal, Select, Spin } from "antd";
 import { Controller, FieldValues, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import styles from "./TaskModal.module.css";
@@ -31,7 +31,7 @@ function TaskModal({ taskId, closeModal, isModalOpen }: TaskModalProps) {
   } = useForm<CreateTask>({ resolver: zodResolver(schema) });
 
   const {
-    data: eventData,
+    data: taskData,
     error: eventError,
     isLoading: isEventLoading,
   } = taskId
@@ -53,34 +53,35 @@ function TaskModal({ taskId, closeModal, isModalOpen }: TaskModalProps) {
   } = useEditTask(closeModal);
 
   useEffect(() => {
-    if (eventData && taskId) {
+    if (taskData && taskId) {
       setDefaultValues({
-        name: eventData.name,
-        place: eventData.place,
-        description: eventData.description,
-        date: eventData.date ? new Date(eventData.date) : undefined,
+        title: taskData.title,
+        description: taskData.description,
+        priority: taskData.priority,
+        status: taskData.status,
+        dueDate: taskData.dueDate ? new Date(taskData.dueDate) : undefined,
       });
 
-      setValue("name", eventData.name);
-      setValue("place", eventData.place);
-      setValue("description", eventData.description);
-      setValue("date", dayjs(eventData.date).toDate());
+      setValue("title", taskData.title);
+      setValue("description", taskData.description);
+      setValue("status", taskData.status);
+      setValue("priority", taskData.priority);
+      setValue("dueDate", dayjs(taskData.dueDate).toDate());
     }
-  }, [eventData, taskId, setValue]);
+  }, [taskData, taskId, setValue]);
 
   const onSubmit = async (form: FieldValues) => {
     const payload = {
-      name: form.name,
+      title: form.title,
       description: form.description,
-      place: form.place,
-      date: form.date,
-      image:
-        "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
+      status: form.status,
+      priority: form.priority,
+      dueDate: form.dueDate,
     };
 
     if (taskId) {
       const result = getNonMatchingProperties(defaultValues, form);
-      editMutate({ eventId: taskId!, event: result });
+      editMutate({ taskId: taskId!.toString(), task: result });
     } else {
       createMutate(payload);
     }
@@ -134,23 +135,41 @@ function TaskModal({ taskId, closeModal, isModalOpen }: TaskModalProps) {
                 defaultValue={
                   defaultValues[item.help as keyof DefaultValues] || ""
                 }
-                render={({ field }) =>
-                  item.type === "date" ? (
-                    <DatePicker
-                      {...field}
-                      value={field.value ? dayjs(field.value) : null}
-                      onChange={(date) =>
-                        field.onChange(date ? date.toDate() : null)
-                      }
-                    />
-                  ) : (
+                render={({ field }) => {
+                  if (item.help === "date") {
+                    return (
+                      <DatePicker
+                        {...field}
+                        value={field.value ? dayjs(field.value) : null}
+                        onChange={(date) =>
+                          field.onChange(date ? date.toDate() : null)
+                        }
+                      />
+                    );
+                  }
+
+                  if (item.help === "status" || item.help === "priority") {
+                    return (
+                      <Select
+                        {...field}
+                        value={field.value ? String(field.value) : ""}
+                      >
+                        {item.options?.map((option: string) => (
+                          <Select.Option key={option} value={option}>
+                            {option}
+                          </Select.Option>
+                        ))}
+                      </Select>
+                    );
+                  }
+                  return (
                     <Input
                       {...field}
                       value={field.value ? String(field.value) : ""}
                       type={item.type}
                     />
-                  )
-                }
+                  );
+                }}
               />
             </Form.Item>
           ))}
@@ -169,7 +188,7 @@ function TaskModal({ taskId, closeModal, isModalOpen }: TaskModalProps) {
               htmlType="submit"
               className={styles["button"]}
             >
-              {!taskId ? "Create" : "Save Changes"}
+              {!taskId ? "Create Task" : "Save Changes"}
             </Button>
           </Form.Item>
         </Form>

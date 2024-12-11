@@ -23,7 +23,7 @@ const useCreateTask = (closeModal: () => void) => {
     onSuccess: () => {
       setTimeout(() => {
         closeModal();
-        navigate(`${routes.ROOT}${routes.MY_TASKS}`);
+        navigate(`${routes.ROOT}${routes.TASKS}`);
       }, 2500);
       queryClient.invalidateQueries({
         queryKey: [queryKeys.TASKS],

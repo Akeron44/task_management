@@ -4,16 +4,16 @@ import { Task, EditTask } from "../types/TaskInterfaces";
 import taskService from "../services/taskService";
 import queryKeys from "../../../constants/queryKeys";
 
-interface EditEventInterface {
-  eventId: number;
-  event: EditTask;
+interface EditTaskInterface {
+  taskId: string;
+  task: EditTask;
 }
 
 const useEditTask = (closeModal: () => void) => {
   const queryClient = useQueryClient();
-  return useMutation<Task, Error, EditEventInterface>({
-    mutationFn: async ({ eventId, event }: EditEventInterface) => {
-      const eventData = await taskService.editTask(eventId, event);
+  return useMutation<Task, Error, EditTaskInterface>({
+    mutationFn: async ({ taskId, task }: EditTaskInterface) => {
+      const eventData = await taskService.editTask(taskId, task);
 
       if (!eventData) {
         throw new Error(error_messages.TASK_NOT_CREATED);

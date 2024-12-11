@@ -1,70 +1,60 @@
 import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  ScheduleOutlined,
+  HomeOutlined,
+  CheckSquareOutlined,
+  BarChartOutlined,
+  UserOutlined,
   LogoutOutlined,
-  TableOutlined,
 } from "@ant-design/icons";
-import { Button, Menu, MenuProps } from "antd";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import routes from "../../../../constants/routes";
+import { useNavigate, useLocation } from "react-router-dom";
 import styles from "./LeftNavigation.module.css";
-import { clearLocalStorage } from "../../../../helpers/localStorageHelper";
-
-type MenuItem = Required<MenuProps>["items"][number];
 
 function LeftNavigation() {
-  const items: MenuItem[] = [
-    {
-      key: "1",
-      icon: <TableOutlined />,
-      label: "All tasks",
-      onClick: () => navigate(`${routes.ROOT}${routes.TASKS}`),
-    },
-    {
-      key: "2",
-      icon: <ScheduleOutlined />,
-      label: "My tasks",
-      onClick: () => navigate(`${routes.ROOT}/${routes.MY_TASKS}`),
-    },
-    {
-      key: "3",
-      icon: <LogoutOutlined />,
-      label: "Log out",
-      onClick: () => handleLogout(),
-    },
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const menuItems = [
+    { key: "/", icon: <HomeOutlined />, label: "Dashboard" },
+    { key: "/tasks", icon: <CheckSquareOutlined />, label: "My Tasks" },
+    { key: "/statistics", icon: <BarChartOutlined />, label: "Statistics" },
   ];
 
-  const [collapsed, setCollapsed] = useState(true);
-  const navigate = useNavigate();
-
   const handleLogout = () => {
-    clearLocalStorage();
-    navigate(routes.ROOT);
+    localStorage.removeItem("token");
+    navigate("/auth/login");
   };
 
-  const toggleCollapsed = () => {
-    setCollapsed(!collapsed);
-  };
   return (
-    <div className={styles["navigation"]} style={{ width: 256 }}>
-      <Button
-        type="primary"
-        onClick={toggleCollapsed}
-        style={{ marginBottom: 16 }}
-      >
-        {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-      </Button>
-      <Menu
-        defaultSelectedKeys={[]}
-        defaultOpenKeys={["sub1"]}
-        mode="inline"
-        theme="dark"
-        inlineCollapsed={collapsed}
-        items={items}
-      />
-    </div>
+    <nav className={styles.leftNav}>
+      <div className={styles.logo}>
+        <span className={styles.logoText}>TaskMaster</span>
+      </div>
+
+      <div className={styles.menu}>
+        {menuItems.map((item) => (
+          <div
+            key={item.key}
+            className={`${styles.menuItem} ${
+              location.pathname === item.key ? styles.active : ""
+            }`}
+            onClick={() => navigate(item.key)}
+          >
+            <span className={styles.menuIcon}>{item.icon}</span>
+            <span className={styles.menuText}>{item.label}</span>
+          </div>
+        ))}
+      </div>
+
+      <div className={styles.userSection}>
+        <div className={styles.userAvatar}>
+          <UserOutlined />
+        </div>
+        <span className={styles.userName}>John Doe</span>
+        <div className={styles.menuItem} onClick={handleLogout}>
+          <LogoutOutlined className={styles.menuIcon} />
+          <span className={styles.menuText}>Logout</span>
+        </div>
+      </div>
+    </nav>
   );
 }
 

@@ -29,12 +29,18 @@ function AuthLayout() {
   }
 
   return (
-    <section className={styles["section_layout"]}>
-      <Button type="primary" onClick={() => handleAuthRoutes()}>
-        {location.pathname === routes.LOG_IN ? "Sign up" : "Log in"}
-      </Button>
-      <Outlet />
-    </section>
+    <div className={styles.authContainer}>
+      <div className={styles.authContent}>
+        <Button
+          type="link"
+          onClick={() => handleAuthRoutes()}
+          className={styles.switchButton}
+        >
+          {location.pathname === routes.LOG_IN ? "Create account" : "Log in"}
+        </Button>
+        <Outlet />
+      </div>
+    </div>
   );
 }
 

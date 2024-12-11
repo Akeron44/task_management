@@ -7,6 +7,7 @@ import { LoadingOutlined } from "@ant-design/icons";
 import { LoginCredentials } from "./types/LoginCredentials";
 import { schema } from "./helpers/validateForm";
 import useLogin from "./hooks/useLogin";
+import { UserOutlined, LockOutlined } from "@ant-design/icons";
 
 function Login() {
   const {
@@ -22,20 +23,20 @@ function Login() {
   };
 
   return (
-    <section className={styles["authentication_layout"]}>
+    <div className={styles.loginContainer}>
       {error && <ErrorComponent message={error.message} />}
-      {isPending && <Spin indicator={<LoadingOutlined spin />} />}
+      {isPending && <Spin indicator={<LoadingOutlined />} />}
+      <h1 className={styles.title}>Welcome Back</h1>
+      <p className={styles.subtitle}>Sign in to your account</p>
+
       <Form
         name="basic"
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 16 }}
-        className={styles["form"]}
+        className={styles.form}
         initialValues={{ remember: true }}
         onFinish={handleSubmit(onSubmit)}
         autoComplete="off"
       >
         <Form.Item<LoginCredentials>
-          label="Email"
           validateStatus={errors.email ? "error" : ""}
           help={errors.email?.message}
         >
@@ -43,12 +44,19 @@ function Login() {
             name="email"
             control={control}
             defaultValue=""
-            render={({ field }) => <Input {...field} />}
+            render={({ field }) => (
+              <Input
+                prefix={<UserOutlined className={styles.inputIcon} />}
+                size="large"
+                placeholder="Email"
+                className={styles.input}
+                {...field}
+              />
+            )}
           />
         </Form.Item>
 
         <Form.Item<LoginCredentials>
-          label="Password"
           validateStatus={errors.password?.message ? "error" : ""}
           help={errors.password?.message}
         >
@@ -56,17 +64,30 @@ function Login() {
             name="password"
             control={control}
             defaultValue=""
-            render={({ field }) => <Input.Password {...field} />}
+            render={({ field }) => (
+              <Input.Password
+                prefix={<LockOutlined className={styles.inputIcon} />}
+                size="large"
+                placeholder="Password"
+                className={styles.input}
+                {...field}
+              />
+            )}
           />
         </Form.Item>
-
-        <Form.Item label={null}>
-          <Button type="primary" htmlType="submit" className={styles.button}>
-            Log in
+        <Form.Item>
+          <Button
+            type="primary"
+            htmlType="submit"
+            className={styles.submitButton}
+            size="large"
+            block
+          >
+            Sign In
           </Button>
         </Form.Item>
       </Form>
-    </section>
+    </div>
   );
 }
 

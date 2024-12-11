@@ -23,7 +23,6 @@ class APIClient<T> {
       const response = await axiosInstance.get<Task[]>(this.endpoint, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log("here");
 
       return response.data;
     } catch (error) {
@@ -44,23 +43,6 @@ class APIClient<T> {
     }
   };
 
-  //   joinEvent = async (id: number) => {
-  //     try {
-  //       const token = this.getToken();
-  //       const response = await axiosInstance.post<T>(
-  //         `${this.endpoint}/${id}/join`,
-  //         {},
-  //         {
-  //           headers: { Authorization: `Bearer ${token}` },
-  //         }
-  //       );
-
-  //       return response.data;
-  //     } catch (error) {
-  //       processAxiosError(error);
-  //     }
-  //   };
-
   createTask = async (data: CreateTask) => {
     try {
       const token = this.getToken();
@@ -74,11 +56,11 @@ class APIClient<T> {
     }
   };
 
-  editTask = async (eventId: number, data: EditTask) => {
+  editTask = async (taskId: string, data: EditTask) => {
     try {
       const token = this.getToken();
       const response = await axiosInstance.patch<T>(
-        `${this.endpoint}/${eventId}`,
+        `${this.endpoint}/${taskId}`,
         data,
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -91,11 +73,11 @@ class APIClient<T> {
     }
   };
 
-  deleteTask = async (eventId: number) => {
+  deleteTask = async (taskId: string) => {
     try {
       const token = this.getToken();
       const response = await axiosInstance.delete<T>(
-        `${this.endpoint}/${eventId}`,
+        `${this.endpoint}/${taskId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 

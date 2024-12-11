@@ -3,7 +3,7 @@ import queryKeys from "../../../constants/queryKeys";
 import { Task } from "../types/TaskInterfaces";
 import taskService from "../services/taskService";
 
-const useEvents = () => {
+const useTasks = () => {
   return useQuery<Task[] | undefined, Error>({
     queryKey: [queryKeys.TASKS],
     queryFn: taskService.getAllTasks,
@@ -11,4 +11,4 @@ const useEvents = () => {
   });
 };
 
-export default useEvents;
+export default useTasks;

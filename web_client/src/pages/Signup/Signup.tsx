@@ -1,31 +1,40 @@
 import { Button, Form, Input, Spin } from "antd";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import styles from "../Login/Login.module.css";
-import ErrorComponent from "../../components/Error/ErrorComponent";
-import { LoadingOutlined } from "@ant-design/icons";
+import styles from "./Signup.module.css";
+import {
+  UserOutlined,
+  LockOutlined,
+  MailOutlined,
+  IdcardOutlined,
+  LoadingOutlined,
+} from "@ant-design/icons";
 import { schema } from "./helpers/validateForm";
 import useSignup from "./hooks/useSignup";
 import { SignupAuthentication } from "./types/SignupAuthenticator";
-import { formItems } from "./constants/formFieldConfig";
+import { SignupCredentials } from "./services/signupService";
+import ErrorComponent from "../../components/Error/ErrorComponent";
+
+const formItems = [
+  { label: "Name", help: "name", type: "text", icon: <UserOutlined /> },
+  { label: "Age", help: "age", type: "number", icon: <IdcardOutlined /> },
+  { label: "Email", help: "email", type: "text", icon: <MailOutlined /> },
+  {
+    label: "Password",
+    help: "password",
+    type: "password",
+    icon: <LockOutlined />,
+  },
+];
 
 function Signup() {
   const {
     handleSubmit,
     formState: { errors },
     control,
-  } = useForm<SignupAuthentication>({ resolver: zodResolver(schema) });
+  } = useForm<SignupCredentials>({ resolver: zodResolver(schema) });
 
   const { mutate, error, isPending } = useSignup();
-
-  const onSubmit = (form: SignupAuthentication) => {
-    mutate({
-      name: form.name,
-      age: form.age,
-      email: form.email,
-      password: form.password,
-    });
-  };
 
   const handleChange =
     (
@@ -42,22 +51,32 @@ function Signup() {
       }
     };
 
+  const onSubmit = (form: SignupCredentials) => {
+    mutate({
+      name: form.name,
+      email: form.email,
+      password: form.password,
+      age: form.age,
+    });
+  };
+
   return (
-    <section className={styles["authentication_layout"]}>
+    <div className={styles.loginContainer}>
       {error && <ErrorComponent message={error.message} />}
-      {isPending && <Spin indicator={<LoadingOutlined spin />} />}
+      {isPending && <Spin indicator={<LoadingOutlined />} />}
+      <h1 className={styles.title}>Welcome</h1>
+      <p className={styles.subtitle}>Create your account</p>
+
       <Form
         name="basic"
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 16 }}
-        className={styles["form"]}
+        className={styles.form}
         initialValues={{ remember: true }}
         onFinish={handleSubmit(onSubmit)}
         autoComplete="off"
       >
         {formItems.map((item) => (
           <Form.Item<SignupAuthentication>
-            label={item.label}
+            key={item.help}
             validateStatus={
               errors[item.help as keyof SignupAuthentication] ? "error" : ""
             }
@@ -72,18 +91,28 @@ function Signup() {
                   {...field}
                   type={item.type}
                   onChange={handleChange(field, item.type)}
+                  className={styles.input}
+                  size="large"
+                  placeholder={item.label}
+                  prefix={item.icon}
                 />
               )}
             />
           </Form.Item>
         ))}
-        <Form.Item label={null}>
-          <Button type="primary" htmlType="submit" className={styles.button}>
-            Sign up
+        <Form.Item>
+          <Button
+            type="primary"
+            htmlType="submit"
+            className={styles.submitButton}
+            size="large"
+            block
+          >
+            Create account
           </Button>
         </Form.Item>
       </Form>
-    </section>
+    </div>
   );
 }
 

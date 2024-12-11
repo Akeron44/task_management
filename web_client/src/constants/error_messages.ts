@@ -1,24 +1,26 @@
 const error_messages = {
-  TASK_CREATED_SUCCESS: "Your event was successfully created.",
+  TASK_CREATED_SUCCESS: "Your task was successfully created.",
 
-  TASK_SAVED_SUCCESS: "Your event was successfully saved.",
+  TASK_SAVED_SUCCESS: "Your task was successfully saved.",
 
   TASK_NOT_CREATED:
     "Your task could not be created. An unknown error occurred.",
 
-  EVENT_DELETED_SUCCESS: "Your event was successfully deleted.",
+  TASK_DELETED_SUCCESS: "Your task was successfully deleted.",
 
-  EVENT_NOT_DELETED:
-    "Your event could not be deleted. An unknown error occurred.",
+  TASK_NOT_DELETED:
+    "Your task could not be deleted. An unknown error occurred.",
 
-  EVENT_ID_MISSING: "Event id is missing.",
+  TASK_ID_MISSING: "task id is missing.",
 
   NO_TASKS: "No new tasks.",
 
-  WRONG_DATE: "You can not create an event in the past",
+  WRONG_DATE: "You can not create an task in the past",
 
-  ARE_YOU_SURE_DELETE:
-    "Are you sure you want to delete this event? This action is irreversable.",
+  ARE_YOU_SURE_DELETE: "Are you sure you want to delete this task?",
+
+  ARE_YOU_SURE_DELETE_PERMANENT:
+    "Are you sure you want to delete this task permanently? This action is irreversable",
 
   AUTHENTICATION_FAILED: "Authentication failed.",
 

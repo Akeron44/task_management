@@ -1,44 +1,49 @@
 export interface TaskModalProps {
-  taskId?: number;
+  taskId?: string;
   closeModal: () => void;
   isModalOpen: boolean;
 }
 
-export interface Person {
-  id: number;
-  name: string;
-}
-
 export interface Task {
-  id: number;
-  name: string;
+  id: string;
+  title: string;
   description: string;
-  organizer?: Person;
-  place: string;
-  date: Date;
-  image: string;
-  peopleGoing: Person[];
-  myEvent?: boolean;
+  priority: "LOW" | "MEDIUM" | "HIGH";
+  myTask?: boolean;
+  userId?: string;
+  status: "PENDING" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED";
+  createdAt?: Date;
+  updatedAt?: Date;
+  dueDate?: Date;
 }
 
 export interface CreateTask {
-  name: string;
+  title: string;
   description: string;
-  place: string;
-  date: Date;
-  image: string;
+  priority?: "LOW" | "MEDIUM" | "HIGH";
+  status?: "PENDING" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED";
+  dueDate: Date;
 }
 
 export interface DefaultValues {
-  name?: string;
-  place?: string;
+  title?: string;
+  priority?: "LOW" | "MEDIUM" | "HIGH";
   description?: string;
-  date?: Date;
+  dueDate?: Date;
+  status?: "PENDING" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED";
+}
+export interface DefaultEditValues {
+  title?: string;
+  priority?: "LOW" | "MEDIUM" | "HIGH";
+  description?: string;
+  dueDate?: Date;
+  status?: "PENDING" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED";
 }
 
 export interface EditTask {
-  name?: string;
+  title?: string;
   description?: string;
-  place?: string;
-  date?: Date;
+  priority?: "LOW" | "MEDIUM" | "HIGH";
+  status?: "PENDING" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED";
+  dueDate?: Date;
 }

@@ -8,21 +8,21 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 
 export const schema = z.object({
-  name: z
+  title: z
     .string()
     .trim()
-    .min(3, { message: error_messages.MIN_CHARACTERS("name", 3) })
-    .max(55, error_messages.MAX_CHARACTERS("name", 55)),
-  place: z
-    .string()
-    .trim()
-    .min(3, error_messages.MIN_CHARACTERS("place", 3))
-    .max(250, error_messages.MAX_CHARACTERS("place", 55)),
+    .min(3, { message: error_messages.MIN_CHARACTERS("title", 3) })
+    .max(55, error_messages.MAX_CHARACTERS("title", 55)),
   description: z
     .string()
     .trim()
     .min(5, error_messages.MIN_CHARACTERS("Description", 5))
     .max(250, error_messages.MAX_CHARACTERS("Description", 250)),
+  status: z.string().trim().min(1, error_messages.ENTITY_REQUIRED("status")),
+  priority: z
+    .string()
+    .trim()
+    .min(1, error_messages.ENTITY_REQUIRED("priority")),
   date: z
     .date({ message: error_messages.ENTITY_REQUIRED("Date") })
     .min(
