@@ -1,12 +1,13 @@
 import {
   HomeOutlined,
   CheckSquareOutlined,
-  BarChartOutlined,
   UserOutlined,
   LogoutOutlined,
 } from "@ant-design/icons";
 import { useNavigate, useLocation } from "react-router-dom";
 import styles from "./LeftNavigation.module.css";
+import routes from "../../../../constants/routes";
+import { clearLocalStorage } from "../../../../helpers/localStorageHelper";
 
 function LeftNavigation() {
   const navigate = useNavigate();
@@ -15,12 +16,11 @@ function LeftNavigation() {
   const menuItems = [
     { key: "/", icon: <HomeOutlined />, label: "Dashboard" },
     { key: "/tasks", icon: <CheckSquareOutlined />, label: "My Tasks" },
-    { key: "/statistics", icon: <BarChartOutlined />, label: "Statistics" },
   ];
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/auth/login");
+    clearLocalStorage();
+    navigate(routes.LOG_IN);
   };
 
   return (

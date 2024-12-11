@@ -30,6 +30,12 @@ const useDeleteTask = () => {
       queryClient.invalidateQueries({
         queryKey: [queryKeys.TASKS],
       });
+      queryClient.invalidateQueries({
+        queryKey: [queryKeys.TASKS_STATISTICS],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [queryKeys.TASKS_MY_STATISTICS],
+      });
     },
   });
 };

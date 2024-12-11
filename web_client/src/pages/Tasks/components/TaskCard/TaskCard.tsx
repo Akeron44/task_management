@@ -2,6 +2,7 @@ import {
   CalendarOutlined,
   EditOutlined,
   DeleteOutlined,
+  CheckOutlined,
 } from "@ant-design/icons";
 import { Button, Modal } from "antd";
 import styles from "./TaskCard.module.css";
@@ -16,8 +17,9 @@ function TaskCard({
   title,
   description,
   status,
-  updatedAt,
   priority,
+  dueDate,
+  createdAt,
 }: Task) {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
@@ -66,12 +68,28 @@ function TaskCard({
       <p className={styles.description}>{description}</p>
 
       <div className={styles.footer}>
-        <div className={styles.dueDate}>
-          <CalendarOutlined className={styles.dateIcon} />
-          {updatedAt && formatDate(updatedAt.toString())}
+        <div>
+          <div className={styles.dueDate}>
+            <CalendarOutlined className={styles.dateIcon} />
+            Created: {createdAt && formatDate(createdAt.toString())}
+          </div>
+          <div className={styles.dueDate}>
+            <CalendarOutlined className={styles.dateIcon} />
+            Deadline: {dueDate && formatDate(dueDate.toString())}
+          </div>
         </div>
 
         <div className={styles.actions}>
+          <Button
+            type="text"
+            icon={<CheckOutlined />}
+            className={`${styles.actionButton} ${
+              status === "COMPLETED"
+                ? styles.completeButton
+                : styles.unCompleteButton
+            }`}
+            onClick={() => console.log("Check complete")}
+          />
           <Button
             type="text"
             icon={<EditOutlined />}

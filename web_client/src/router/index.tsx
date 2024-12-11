@@ -7,6 +7,7 @@ import error_messages from "../constants/error_messages";
 import Signup from "../pages/Signup/Signup";
 import AppLayout from "../layout/AppLayout/AppLayout";
 import TasksList from "../pages/Tasks/TasksList";
+import DashboardTasks from "../pages/Tasks/components/DashboardTasks/DashboardTasks";
 
 const router = createBrowserRouter([
   {
@@ -16,16 +17,11 @@ const router = createBrowserRouter([
       <ErrorComponent message={error_messages.UNKOWN_ERROR_OCCURED} />
     ),
     children: [
+      { index: true, element: <DashboardTasks /> },
       {
         path: routes.TASKS,
         element: <TasksList />,
       },
-      // { path: `${routes.TASKS}/${routes.TASK_ID}`, element: <EventDetail /> },
-      // { path: routes.MY_TASKS, element: <MyEvents /> },
-      // {
-      //   path: `${routes.MY_TASKS}/${routes.TASK_ID}`,
-      //   element: <EventDetail />,
-      // },
     ],
   },
   {

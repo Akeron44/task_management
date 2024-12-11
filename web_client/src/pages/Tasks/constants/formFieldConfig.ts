@@ -1,9 +1,15 @@
 export const formItems = [
-  { label: "Title", help: "title", type: "text" },
-  { label: "Description", help: "description", type: "text" },
+  { label: "Title", name: "title", help: "title", type: "text" },
+  {
+    label: "Description",
+    name: "description",
+    help: "description",
+    type: "text",
+  },
   {
     label: "Status",
     help: "status",
+    name: "status",
     type: "text",
     options: ["PENDING", "IN_PROGRESS", "COMPLETED", "CANCELLED"],
   },
@@ -11,7 +17,8 @@ export const formItems = [
     label: "Priority",
     help: "priority",
     type: "text",
+    name: "priority",
     options: ["LOW", "MEDIUM", "HIGH"],
   },
-  { label: "Due Date", help: "date", type: "date" },
+  { label: "Deadline", help: "date", name: "dueDate", type: "date" },
 ];

@@ -3,6 +3,7 @@ import {
   SearchOutlined,
   PlusOutlined,
   FilterOutlined,
+  SortDescendingOutlined,
 } from "@ant-design/icons";
 import { useLocation } from "react-router-dom";
 import styles from "./Navigation.module.css";
@@ -19,10 +20,6 @@ function Navigation() {
         return "Dashboard";
       case "/tasks":
         return "Tasks";
-      case "/calendar":
-        return "Calendar";
-      case "/statistics":
-        return "Statistics";
       default:
         return "Dashboard";
     }
@@ -33,14 +30,10 @@ function Navigation() {
       <h1 className={styles.pageTitle}>{getPageTitle()}</h1>
 
       <div className={styles.actions}>
-        <div className={styles.searchBar}>
-          <Input
-            placeholder="Search tasks..."
-            prefix={<SearchOutlined />}
-            size="large"
-          />
-        </div>
-
+        <Button className={styles.filterButton}>
+          <SortDescendingOutlined />
+          Sort
+        </Button>
         <Button className={styles.filterButton}>
           <FilterOutlined />
           Filter

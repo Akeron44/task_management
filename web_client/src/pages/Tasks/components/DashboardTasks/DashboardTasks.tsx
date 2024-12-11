@@ -1,20 +1,28 @@
-import TaskCard from "./components/TaskCard/TaskCard";
-import styles from "./TasksList.module.css";
-import useTasks from "./hooks/useTasks";
-import EmptyComponent from "../../components/Empty/EmptyComponent";
+import styles from "./DashboardTasks.module.css";
+import TaskCard from "../TaskCard/TaskCard";
+import useGetTasksStats from "../../hooks/useGetTasksStats";
+import useTasks from "../../hooks/useTasks";
+import EmptyComponent from "../../../../components/Empty/EmptyComponent";
+import { Task } from "../../types/TaskInterfaces";
+import ErrorComponent from "../../../../components/Error/ErrorComponent";
+import { LoadingOutlined } from "@ant-design/icons";
+import { Spin } from "antd";
 
-import { Task } from "./types/TaskInterfaces";
-import useGetMyTasksStats from "./hooks/useGetMyTasksStats";
+function DashboardTasks() {
+  const { data: stats } = useGetTasksStats();
 
-function TasksList() {
-  const { data: stats } = useGetMyTasksStats();
   const user = JSON.parse(localStorage.getItem("user") || "{}");
-  const { data } = useTasks();
+  const { data, error, isLoading } = useTasks();
 
-  const tasks = data?.filter((task: Task) => task.userId === user.id);
+  const tasks = data?.filter((task: Task) => task.userId !== user.id);
+
+  if (isLoading) {
+    return <Spin indicator={<LoadingOutlined spin />} size="large" />;
+  }
 
   return (
     <div>
+      {error && <ErrorComponent message={error.message} />}
       <div className={styles.statsSection}>
         <div className={styles.statCard}>
           <div className={styles.statTitle}>Total Tasks</div>
@@ -71,4 +79,4 @@ function TasksList() {
   );
 }
 
-export default TasksList;
+export default DashboardTasks;

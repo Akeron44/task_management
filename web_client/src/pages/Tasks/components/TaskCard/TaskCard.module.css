@@ -91,6 +91,16 @@
   color: #666;
 }
 
+.unCompleteButton {
+  background-color: #fff;
+  color: #111;
+}
+
+.completeButton {
+  background-color: #388e3c;
+  color: #fff;
+}
+
 .actionButton:hover {
   background: #f5f7fb;
   color: #1a2b4c;

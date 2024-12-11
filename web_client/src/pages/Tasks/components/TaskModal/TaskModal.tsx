@@ -1,11 +1,13 @@
 import { Button, DatePicker, Form, Input, Modal, Select, Spin } from "antd";
 import { Controller, FieldValues, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import styles from "./TaskModal.module.css";
+import { CloseOutlined, LoadingOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
+
+import styles from "./TaskModal.module.css";
 import ErrorComponent from "../../../../components/Error/ErrorComponent";
-import { LoadingOutlined } from "@ant-design/icons";
+import Notification from "../../../../components/Notification/Notification";
 import {
   CreateTask,
   DefaultValues,
@@ -13,11 +15,10 @@ import {
 } from "../../types/TaskInterfaces";
 import { formItems } from "../../constants/formFieldConfig";
 import { getNonMatchingProperties } from "../../helpers/getNonMatchingHelper";
-import useCreateTask from "../../hooks/useCreateTask";
 import { schema } from "../../helpers/validateForm";
+import useCreateTask from "../../hooks/useCreateTask";
 import useTask from "../../hooks/useTask";
 import useEditTask from "../../hooks/useEditTask";
-import Notification from "../../../../components/Notification/Notification";
 import error_messages from "../../../../constants/error_messages";
 
 function TaskModal({ taskId, closeModal, isModalOpen }: TaskModalProps) {
@@ -35,7 +36,7 @@ function TaskModal({ taskId, closeModal, isModalOpen }: TaskModalProps) {
     error: eventError,
     isLoading: isEventLoading,
   } = taskId
-    ? useTask(taskId?.toString()!)
+    ? useTask(taskId.toString())
     : { data: null, error: null, isLoading: null };
 
   const {
@@ -61,7 +62,6 @@ function TaskModal({ taskId, closeModal, isModalOpen }: TaskModalProps) {
         status: taskData.status,
         dueDate: taskData.dueDate ? new Date(taskData.dueDate) : undefined,
       });
-
       setValue("title", taskData.title);
       setValue("description", taskData.description);
       setValue("status", taskData.status);
@@ -70,56 +70,72 @@ function TaskModal({ taskId, closeModal, isModalOpen }: TaskModalProps) {
     }
   }, [taskData, taskId, setValue]);
 
-  const onSubmit = async (form: FieldValues) => {
+  const handleFormSubmit = async (form: FieldValues) => {
     const payload = {
       title: form.title,
       description: form.description,
       status: form.status,
       priority: form.priority,
-      dueDate: form.dueDate,
+      dueDate: form.date,
     };
 
     if (taskId) {
-      const result = getNonMatchingProperties(defaultValues, form);
-      editMutate({ taskId: taskId!.toString(), task: result });
+      const changedFields = getNonMatchingProperties(defaultValues, form);
+      editMutate({ taskId: taskId.toString(), task: changedFields });
     } else {
+      console.log(payload);
       createMutate(payload);
     }
   };
 
   const errorMessage =
     createError?.message || editError?.message || eventError?.message;
-
   const isLoading = isEditLoading || isCreateLoading || isEventLoading;
   const isSuccess = isCreateSuccess || isEditSuccess;
 
   return (
-    <div onClick={(e) => e.stopPropagation()}>
-      <Modal open={isModalOpen} footer={null} onCancel={closeModal}>
-        {isLoading && (
-          <Spin indicator={<LoadingOutlined spin />} size="small" />
-        )}
-        {isSuccess && (
-          <Notification
-            size="small"
-            type="success"
-            message={
-              isCreateSuccess
-                ? error_messages.TASK_CREATED_SUCCESS
-                : error_messages.TASK_SAVED_SUCCESS
-            }
-          />
-        )}
-        {errorMessage && <ErrorComponent message={errorMessage} />}
+    <Modal
+      open={isModalOpen}
+      footer={null}
+      onCancel={closeModal}
+      className={styles.modalContent}
+      closeIcon={<CloseOutlined className={styles.closeButton} />}
+      width={500}
+      centered
+      destroyOnClose
+      maskClosable={false}
+      title={
+        <div className={styles.header}>
+          <h3 className={styles.title}>
+            {!taskId ? "Create New Task" : "Edit Task"}
+          </h3>
+        </div>
+      }
+    >
+      {isLoading && <Spin indicator={<LoadingOutlined spin />} size="small" />}
 
-        <Form
-          name="basic"
-          labelCol={{ span: 8 }}
-          wrapperCol={{ span: 16 }}
-          className={styles["form"]}
-          onFinish={handleSubmit(onSubmit)}
-          autoComplete="off"
-        >
+      {isSuccess && (
+        <Notification
+          size="small"
+          type="success"
+          message={
+            isCreateSuccess
+              ? error_messages.TASK_CREATED_SUCCESS
+              : error_messages.TASK_SAVED_SUCCESS
+          }
+        />
+      )}
+
+      {errorMessage && <ErrorComponent message={errorMessage} />}
+
+      <Form
+        name="task-form"
+        layout="vertical"
+        className={styles.form}
+        onFinish={handleSubmit(handleFormSubmit)}
+        autoComplete="off"
+      >
+        <div className={styles.formItemsContainer}>
           {formItems.map((item) => (
             <Form.Item<CreateTask>
               key={item.help}
@@ -133,7 +149,7 @@ function TaskModal({ taskId, closeModal, isModalOpen }: TaskModalProps) {
                 name={item.help as keyof CreateTask}
                 control={control}
                 defaultValue={
-                  defaultValues[item.help as keyof DefaultValues] || ""
+                  defaultValues[item.name as keyof DefaultValues] || ""
                 }
                 render={({ field }) => {
                   if (item.help === "date") {
@@ -173,28 +189,90 @@ function TaskModal({ taskId, closeModal, isModalOpen }: TaskModalProps) {
               />
             </Form.Item>
           ))}
-          <Form.Item label={null}>
-            <Button
-              type="primary"
-              danger
-              htmlType="submit"
-              className={styles.button}
-              onClick={() => closeModal()}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="primary"
-              htmlType="submit"
-              className={styles["button"]}
-            >
-              {!taskId ? "Create Task" : "Save Changes"}
-            </Button>
-          </Form.Item>
-        </Form>
-      </Modal>
-    </div>
+        </div>
+
+        <Form.Item label={null} className={styles.buttonGroup}>
+          <Button
+            type="primary"
+            danger
+            onClick={closeModal}
+            className={`${styles.button} ${styles.cancelButton}`}
+          >
+            Cancel
+          </Button>
+          <Button
+            type="primary"
+            htmlType="submit"
+            className={`${styles.button} ${styles.submitButton}`}
+          >
+            {!taskId ? "Create Task" : "Save Changes"}
+          </Button>
+        </Form.Item>
+      </Form>
+    </Modal>
   );
 }
 
 export default TaskModal;
+{
+  /* {formItems.map((item) => (
+  <Form.Item<CreateTask>
+  key={item.help}
+  label={item.label as keyof CreateTask}
+  className={styles.formGroup}
+  validateStatus={
+    errors[item.help as keyof CreateTask]?.message ? "error" : ""
+    }
+    help={errors[item.help as keyof CreateTask]?.message}
+    >
+    <Controller
+    name={item.help as keyof CreateTask}
+    control={control}
+    defaultValue={
+      defaultValues[item.help as keyof DefaultValues] || ""
+      }
+      render={({ field }) => renderFormField({ field, item })}
+      />
+      </Form.Item>
+      ))} */
+}
+
+// const renderFormField = ({ field, item }: { field: any; item: any }) => {
+//   if (item.help === "date") {
+//     return (
+//       <DatePicker
+//         {...field}
+//         value={field.value ? dayjs(field.value) : null}
+//         onChange={(date) => {
+//           field.onChange(date ? date.toDate() : null);
+//         }}
+//         className={styles.input}
+//       />
+//     );
+//   }
+
+//   if (item.help === "status" || item.help === "priority") {
+//     return (
+//       <Select
+//         {...field}
+//         value={field.value ? String(field.value) : ""}
+//         className={styles.input}
+//       >
+//         {item.options?.map((option: string) => (
+//           <Select.Option key={option} value={option}>
+//             {option}
+//           </Select.Option>
+//         ))}
+//       </Select>
+//     );
+//   }
+
+//   return (
+//     <Input
+//       {...field}
+//       value={field.value ? String(field.value) : ""}
+//       type={item.type}
+//       className={styles.input}
+//     />
+//   );
+// };

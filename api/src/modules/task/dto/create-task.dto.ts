@@ -6,7 +6,6 @@ export class CreateTaskDto {
   title: string;
 
   @IsString()
-  @IsOptional()
   description?: string;
 
   @IsEnum(Priority)
@@ -18,6 +17,5 @@ export class CreateTaskDto {
   status?: TaskStatus;
 
   @IsDateString()
-  @IsOptional()
   dueDate?: Date;
 }

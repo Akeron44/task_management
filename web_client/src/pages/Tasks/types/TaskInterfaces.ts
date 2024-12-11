@@ -47,3 +47,18 @@ export interface EditTask {
   status?: "PENDING" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED";
   dueDate?: Date;
 }
+
+export interface TaskSummary {
+  total: number;
+  byStatus: {
+    PENDING: number;
+    IN_PROGRESS: number;
+    COMPLETED: number;
+    CANCELLED: number;
+  };
+  byPriority: {
+    LOW: number;
+    MEDIUM: number;
+    HIGH: number;
+  };
+}

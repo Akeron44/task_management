@@ -24,7 +24,7 @@ export class TaskService {
 
   findAll(userId: string) {
     return this.taskDal.findAll({
-      where: { userId },
+      where: { deletedAt: null },
     });
   }
 
@@ -56,9 +56,39 @@ export class TaskService {
     return this.taskDal.softDelete({ id });
   }
 
-  async getTaskStats(userId: string) {
+  async getMyTaskStats(userId: string) {
     const tasks = await this.taskDal.findAll({
       where: { userId },
+    });
+
+    return {
+      total: tasks.length,
+      byStatus: {
+        [TaskStatus.PENDING]: tasks.filter(
+          (t) => t.status === TaskStatus.PENDING,
+        ).length,
+        [TaskStatus.IN_PROGRESS]: tasks.filter(
+          (t) => t.status === TaskStatus.IN_PROGRESS,
+        ).length,
+        [TaskStatus.COMPLETED]: tasks.filter(
+          (t) => t.status === TaskStatus.COMPLETED,
+        ).length,
+        [TaskStatus.CANCELLED]: tasks.filter(
+          (t) => t.status === TaskStatus.CANCELLED,
+        ).length,
+      },
+      byPriority: {
+        [Priority.LOW]: tasks.filter((t) => t.priority === Priority.LOW).length,
+        [Priority.MEDIUM]: tasks.filter((t) => t.priority === Priority.MEDIUM)
+          .length,
+        [Priority.HIGH]: tasks.filter((t) => t.priority === Priority.HIGH)
+          .length,
+      },
+    };
+  }
+  async getTaskStats(userId: string) {
+    const tasks = await this.taskDal.findAll({
+      where: { userId: { not: userId } },
     });
 
     return {

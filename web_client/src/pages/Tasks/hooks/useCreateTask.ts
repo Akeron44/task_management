@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import eventsService from "../services/taskService";
 import { CreateTask, Task } from "../types/TaskInterfaces";
-
 import { useNavigate } from "react-router-dom";
 import routes from "../../../constants/routes";
 import queryKeys from "../../../constants/queryKeys";
@@ -27,6 +26,12 @@ const useCreateTask = (closeModal: () => void) => {
       }, 2500);
       queryClient.invalidateQueries({
         queryKey: [queryKeys.TASKS],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [queryKeys.TASKS_STATISTICS],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [queryKeys.TASKS_MY_STATISTICS],
       });
     },
   });

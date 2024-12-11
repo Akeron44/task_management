@@ -30,6 +30,10 @@ export class TaskController {
     return this.taskService.findAll(req.user['id']);
   }
 
+  @Get('mystats')
+  getMyStats(@Req() req: Request) {
+    return this.taskService.getMyTaskStats(req.user['id']);
+  }
   @Get('stats')
   getStats(@Req() req: Request) {
     return this.taskService.getTaskStats(req.user['id']);
