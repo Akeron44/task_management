@@ -9,6 +9,8 @@ export const error_messages = {
 
   ADMIN_JOIN_HIS_EVENT: 'You can not join your own event.',
 
+  INVALID_PROPERTY: `Please set a valid property.`,
+
   RECORD_NOT_FOUND: (record: string) =>
     `${record.toUpperCase()} record was not found.`,
 
@@ -28,14 +30,14 @@ export const error_messages = {
 
   INVALID_ENTITY: (entity: string) =>
     `Invalid ${entity} or ${entity} not found.`,
-  // Task-related error messages
+
   TASK_NOT_FOUND: (id: string) => `Task with ID ${id} not found.`,
+
   TASK_ALREADY_DELETED: (id: string) =>
     `Task with ID ${id} is already deleted.`,
 
-  // Password error messages
   PASSWORD_COMPLEXITY:
-    'Password must contain at least one uppercase letter, one number, and one special character.',
+    'Password must contain at least onelowercase letterm one uppercase letter, one number, and one special character.',
 
   PRISMA: {
     DATABASE_ERROR:

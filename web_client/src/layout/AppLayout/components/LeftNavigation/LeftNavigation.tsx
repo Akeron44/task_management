@@ -3,15 +3,20 @@ import {
   CheckSquareOutlined,
   UserOutlined,
   LogoutOutlined,
+  MenuUnfoldOutlined,
 } from "@ant-design/icons";
 import { useNavigate, useLocation } from "react-router-dom";
 import styles from "./LeftNavigation.module.css";
 import routes from "../../../../constants/routes";
 import { clearLocalStorage } from "../../../../helpers/localStorageHelper";
+import { useMenuNavigation } from "../../../../store/useMenuNavigation";
+import { Button } from "antd";
 
 function LeftNavigation() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { isMenuCollapsed, toggleMenu } = useMenuNavigation();
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
 
   const menuItems = [
     { key: "/", icon: <HomeOutlined />, label: "Dashboard" },
@@ -24,9 +29,14 @@ function LeftNavigation() {
   };
 
   return (
-    <nav className={styles.leftNav}>
+    <nav className={`${styles.leftNav} ${isMenuCollapsed ? styles.open : ""}`}>
       <div className={styles.logo}>
         <span className={styles.logoText}>TaskMaster</span>
+        <Button
+          className={styles.menuToggleButton}
+          icon={<MenuUnfoldOutlined />}
+          onClick={toggleMenu}
+        />
       </div>
 
       <div className={styles.menu}>
@@ -48,7 +58,7 @@ function LeftNavigation() {
         <div className={styles.userAvatar}>
           <UserOutlined />
         </div>
-        <span className={styles.userName}>John Doe</span>
+        <span className={styles.userName}>{user.name || "John Doe"}</span>
         <div className={styles.menuItem} onClick={handleLogout}>
           <LogoutOutlined className={styles.menuIcon} />
           <span className={styles.menuText}>Logout</span>

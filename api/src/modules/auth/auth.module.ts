@@ -5,12 +5,12 @@ import { UserModule } from '../user/user.module';
 import { PrismaModule } from '../prisma/prisma.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { UserDal } from '../user/dal/user.dal';
 import { AuthHelper } from './helpers/auth.helper';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { JwtAuthGuard } from 'src/common/guards/jwt.guard';
 import { ErrorDal } from 'src/common/dal/error.dal';
+import { UserDal } from '../user/dal/user.dal';
 
 @Module({
   imports: [

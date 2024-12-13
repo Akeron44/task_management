@@ -23,10 +23,5 @@ export const schema = z.object({
     .string()
     .trim()
     .min(1, error_messages.ENTITY_REQUIRED("priority")),
-  date: z
-    .date({ message: error_messages.ENTITY_REQUIRED("Date") })
-    .min(
-      dayjs().tz("Europe/Belgrade").startOf("day").toDate(),
-      error_messages.WRONG_DATE
-    ),
+  dueDate: z.string().min(1, error_messages.ENTITY_REQUIRED("Deadline")),
 });

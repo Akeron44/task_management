@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import routes from "../../../constants/routes";
 import { LoginCredentials, UserResponse } from "../types/LoginCredentials";
 import error_messages from "../../../constants/error_messages";
+import { openNotification } from "../../../helpers/handleNotification";
 
 const useLogin = () => {
   const navigate = useNavigate();
@@ -24,8 +25,12 @@ const useLogin = () => {
       navigate(routes.ROOT);
       return user;
     },
-    onError: (error: Error) => {
-      return error;
+    onError: (error) => {
+      openNotification({
+        type: "error",
+        title: "Error",
+        message: error.message,
+      });
     },
   });
 };

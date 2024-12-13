@@ -2,6 +2,8 @@ export interface TaskModalProps {
   taskId?: string;
   closeModal: () => void;
   isModalOpen: boolean;
+  isEventLoading?: boolean;
+  taskData?: Task;
 }
 
 export interface Task {
@@ -32,13 +34,6 @@ export interface DefaultValues {
   dueDate?: Date;
   status?: "PENDING" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED";
 }
-export interface DefaultEditValues {
-  title?: string;
-  priority?: "LOW" | "MEDIUM" | "HIGH";
-  description?: string;
-  dueDate?: Date;
-  status?: "PENDING" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED";
-}
 
 export interface EditTask {
   title?: string;
@@ -46,19 +41,4 @@ export interface EditTask {
   priority?: "LOW" | "MEDIUM" | "HIGH";
   status?: "PENDING" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED";
   dueDate?: Date;
-}
-
-export interface TaskSummary {
-  total: number;
-  byStatus: {
-    PENDING: number;
-    IN_PROGRESS: number;
-    COMPLETED: number;
-    CANCELLED: number;
-  };
-  byPriority: {
-    LOW: number;
-    MEDIUM: number;
-    HIGH: number;
-  };
 }

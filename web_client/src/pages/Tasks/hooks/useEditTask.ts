@@ -3,6 +3,8 @@ import error_messages from "../../../constants/error_messages";
 import { Task, EditTask } from "../types/TaskInterfaces";
 import taskService from "../services/taskService";
 import queryKeys from "../../../constants/queryKeys";
+import { messages } from "../../../constants/messages";
+import { openNotification } from "../../../helpers/handleNotification";
 
 interface EditTaskInterface {
   taskId: string;
@@ -22,20 +24,24 @@ const useEditTask = (closeModal: () => void) => {
       return eventData;
     },
     onSuccess: () => {
-      setTimeout(() => {
-        closeModal();
-      }, 2500);
+      openNotification({
+        type: "success",
+        title: "Changes saved",
+        message: messages.TASK_SAVED_SUCCESS,
+      });
+      closeModal();
       queryClient.invalidateQueries({
         queryKey: [queryKeys.TASK_DETAIL],
       });
       queryClient.invalidateQueries({
         queryKey: [queryKeys.TASKS],
       });
-      queryClient.invalidateQueries({
-        queryKey: [queryKeys.TASKS_STATISTICS],
-      });
-      queryClient.invalidateQueries({
-        queryKey: [queryKeys.TASKS_MY_STATISTICS],
+    },
+    onError: (error) => {
+      openNotification({
+        type: "error",
+        title: "Error",
+        message: error.message,
       });
     },
   });

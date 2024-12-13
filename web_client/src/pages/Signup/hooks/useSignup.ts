@@ -4,6 +4,7 @@ import routes from "../../../constants/routes";
 import signupService, { SignupCredentials } from "../services/signupService";
 import { UserResponse } from "../../Login/types/LoginCredentials";
 import error_messages from "../../../constants/error_messages";
+import { openNotification } from "../../../helpers/handleNotification";
 
 const useSignup = () => {
   const navigate = useNavigate();
@@ -23,6 +24,13 @@ const useSignup = () => {
       localStorage.setItem("user", JSON.stringify(user));
       navigate(routes.ROOT);
       return user;
+    },
+    onError(error) {
+      openNotification({
+        type: "error",
+        title: "Error",
+        message: error.message,
+      });
     },
   });
 };

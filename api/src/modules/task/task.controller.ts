@@ -14,8 +14,9 @@ import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt.guard';
 import { Request } from 'express';
+import { controller_path } from 'src/common/constants/controller-path';
 
-@Controller('tasks')
+@Controller(controller_path.TASKS.INDEX)
 @UseGuards(JwtAuthGuard)
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
@@ -26,25 +27,16 @@ export class TaskController {
   }
 
   @Get()
-  findAll(@Req() req: Request) {
-    return this.taskService.findAll(req.user['id']);
+  findAll() {
+    return this.taskService.findAll();
   }
 
-  @Get('mystats')
-  getMyStats(@Req() req: Request) {
-    return this.taskService.getMyTaskStats(req.user['id']);
-  }
-  @Get('stats')
-  getStats(@Req() req: Request) {
-    return this.taskService.getTaskStats(req.user['id']);
-  }
-
-  @Get(':id')
+  @Get(controller_path.TASKS.TASK_ID)
   findOne(@Param('id') id: string, @Req() req: Request) {
     return this.taskService.findOne(id, req.user['id']);
   }
 
-  @Patch(':id')
+  @Patch(controller_path.TASKS.TASK_ID)
   update(
     @Param('id') id: string,
     @Body() updateTaskDto: UpdateTaskDto,
@@ -53,18 +45,17 @@ export class TaskController {
     return this.taskService.update(id, req.user['id'], updateTaskDto);
   }
 
-  @Delete(':id')
+  @Delete(controller_path.TASKS.TASK_ID)
   remove(@Param('id') id: string, @Req() req: Request) {
     return this.taskService.remove(id, req.user['id']);
   }
 
-  @Patch(':id/restore')
+  @Patch(controller_path.TASKS.RESTORE)
   restore(@Param('id') id: string, @Req() req: Request) {
     return this.taskService.restore(id, req.user['id']);
   }
 
-  // Optional: Add hard delete endpoint if needed
-  @Delete(':id/hard')
+  @Delete(controller_path.TASKS.HARD_DELETE)
   hardDelete(@Param('id') id: string, @Req() req: Request) {
     return this.taskService.hardDelete(id, req.user['id']);
   }

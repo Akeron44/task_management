@@ -1,16 +1,13 @@
-import {
-  CalendarOutlined,
-  EditOutlined,
-  DeleteOutlined,
-  CheckOutlined,
-} from "@ant-design/icons";
-import { Button, Modal } from "antd";
+import { CalendarOutlined } from "@ant-design/icons";
+import { Modal } from "antd";
 import styles from "./TaskCard.module.css";
 import { Task } from "../../types/TaskInterfaces";
 import { useState } from "react";
-import TaskModal from "../TaskModal/TaskModal";
 import useDeleteTask from "../../hooks/useDeleteTask";
 import error_messages from "../../../../constants/error_messages";
+import { formatStatus } from "../../helpers/formatStatus";
+import EditTaskModal from "../EditTaskModal/EditTaskModal";
+import ButtonActions from "./components/ButtonActions/ButtonActions";
 
 function TaskCard({
   id,
@@ -20,6 +17,7 @@ function TaskCard({
   priority,
   dueDate,
   createdAt,
+  myTask,
 }: Task) {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
@@ -31,7 +29,7 @@ function TaskCard({
     });
   };
 
-  const { mutate: mutateDelete } = useDeleteTask();
+  const { mutate: mutateDelete, isPending: isLoading } = useDeleteTask();
 
   function handleDeleteEvent(taskId: string) {
     Modal.confirm({
@@ -61,7 +59,7 @@ function TaskCard({
           }`}
         />
         <span className={styles.statusText}>
-          {status && status.charAt(0).toUpperCase() + status.slice(1)}
+          {status && formatStatus(status)}
         </span>
       </div>
 
@@ -78,35 +76,16 @@ function TaskCard({
             Deadline: {dueDate && formatDate(dueDate.toString())}
           </div>
         </div>
-
-        <div className={styles.actions}>
-          <Button
-            type="text"
-            icon={<CheckOutlined />}
-            className={`${styles.actionButton} ${
-              status === "COMPLETED"
-                ? styles.completeButton
-                : styles.unCompleteButton
-            }`}
-            onClick={() => console.log("Check complete")}
+        {myTask && (
+          <ButtonActions
+            openModal={() => setIsModalOpen(true)}
+            deleteEvent={() => handleDeleteEvent(id)}
+            isLoading={isLoading}
           />
-          <Button
-            type="text"
-            icon={<EditOutlined />}
-            className={styles.actionButton}
-            onClick={() => setIsModalOpen(true)}
-          />
-          <Button
-            type="text"
-            icon={<DeleteOutlined />}
-            className={styles.actionButton}
-            onClick={() => handleDeleteEvent(id)}
-            danger
-          />
-        </div>
+        )}
       </div>
       {isModalOpen && (
-        <TaskModal
+        <EditTaskModal
           isModalOpen={isModalOpen}
           closeModal={() => setIsModalOpen(false)}
           taskId={id}

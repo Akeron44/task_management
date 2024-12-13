@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { SignupUserDto } from 'src/modules/auth/dto/signup-user.dto';
-import { ErrorDal } from '../../../common/dal/error.dal';
+import { ErrorDal } from 'src/common/dal/error.dal';
 
 @Injectable()
 export class UserDal {
@@ -12,20 +12,7 @@ export class UserDal {
 
   async findByEmail(email: string) {
     try {
-      return await this.prisma.user.findUnique({
-        where: { email, deletedAt: null },
-      });
-    } catch (error) {
-      this.errorDal.handleError(error);
-      console.log('.');
-    }
-  }
-
-  async findById(id: number) {
-    try {
-      return await this.prisma.user.findUnique({
-        where: { id: id.toString() },
-      });
+      return await this.prisma.user.findUnique({ where: { email } });
     } catch (error) {
       this.errorDal.handleError(error);
     }

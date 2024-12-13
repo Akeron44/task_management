@@ -1,14 +1,10 @@
 import axios from "axios";
 import { processAxiosError } from "../../../helpers/apiErrorHelper";
-import {
-  CreateTask,
-  Task,
-  EditTask,
-  TaskSummary,
-} from "../types/TaskInterfaces";
+import { CreateTask, Task, EditTask } from "../types/TaskInterfaces";
+import endpoints from "../../../constants/endpoints";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:4000",
+  baseURL: endpoints.BASE_URL,
 });
 
 class APIClient<T> {
@@ -35,38 +31,7 @@ class APIClient<T> {
     }
   };
 
-  getTasksStatistics = async () => {
-    try {
-      const token = this.getToken();
-      const response = await axiosInstance.get<TaskSummary>(
-        `${this.endpoint}/stats`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      return response.data;
-    } catch (error) {
-      processAxiosError(error);
-    }
-  };
-  getMyTasksStatistics = async () => {
-    try {
-      const token = this.getToken();
-      const response = await axiosInstance.get<TaskSummary>(
-        `${this.endpoint}/mystats`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      return response.data;
-    } catch (error) {
-      processAxiosError(error);
-    }
-  };
-
-  getTask = async (id: string) => {
+  getTask = async (id: string | undefined) => {
     try {
       const token = this.getToken();
       const response = await axiosInstance.get<Task>(`${this.endpoint}/${id}`, {

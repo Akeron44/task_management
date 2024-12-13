@@ -73,22 +73,8 @@
 
 .dateIcon {
   margin-right: 6px;
+  margin-bottom: 6px;
   font-size: 14px;
-}
-
-.actions {
-  display: flex;
-  gap: 8px;
-}
-
-.actionButton {
-  padding: 6px;
-  border-radius: 6px;
-  border: 1px solid #eef1f8;
-  background: white;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  color: #666;
 }
 
 .unCompleteButton {
@@ -99,11 +85,6 @@
 .completeButton {
   background-color: #388e3c;
   color: #fff;
-}
-
-.actionButton:hover {
-  background: #f5f7fb;
-  color: #1a2b4c;
 }
 
 .status {
@@ -129,6 +110,9 @@
 
 .statusDot.completed {
   background: #388e3c;
+}
+.statusDot.cancelled {
+  background: #c30606;
 }
 
 .statusText {

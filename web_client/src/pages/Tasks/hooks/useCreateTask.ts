@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import routes from "../../../constants/routes";
 import queryKeys from "../../../constants/queryKeys";
 import error_messages from "../../../constants/error_messages";
+import { openNotification } from "../../../helpers/handleNotification";
+import { messages } from "../../../constants/messages";
 
 const useCreateTask = (closeModal: () => void) => {
   const navigate = useNavigate();
@@ -20,18 +22,22 @@ const useCreateTask = (closeModal: () => void) => {
       return event;
     },
     onSuccess: () => {
-      setTimeout(() => {
-        closeModal();
-        navigate(`${routes.ROOT}${routes.TASKS}`);
-      }, 2500);
+      openNotification({
+        type: "success",
+        title: "Task created",
+        message: messages.TASK_CREATED_SUCCESS,
+      });
+      closeModal();
+      navigate(`${routes.ROOT}${routes.TASKS}`);
       queryClient.invalidateQueries({
         queryKey: [queryKeys.TASKS],
       });
-      queryClient.invalidateQueries({
-        queryKey: [queryKeys.TASKS_STATISTICS],
-      });
-      queryClient.invalidateQueries({
-        queryKey: [queryKeys.TASKS_MY_STATISTICS],
+    },
+    onError: (error) => {
+      openNotification({
+        type: "error",
+        title: "Error",
+        message: error.message,
       });
     },
   });

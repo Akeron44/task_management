@@ -1,12 +1,6 @@
 const error_messages = {
-  TASK_CREATED_SUCCESS: "Your task was successfully created.",
-
-  TASK_SAVED_SUCCESS: "Your task was successfully saved.",
-
   TASK_NOT_CREATED:
     "Your task could not be created. An unknown error occurred.",
-
-  TASK_DELETED_SUCCESS: "Your task was successfully deleted.",
 
   TASK_NOT_DELETED:
     "Your task could not be deleted. An unknown error occurred.",
@@ -17,16 +11,16 @@ const error_messages = {
 
   WRONG_DATE: "You can not create an task in the past",
 
-  ARE_YOU_SURE_DELETE: "Are you sure you want to delete this task?",
-
-  ARE_YOU_SURE_DELETE_PERMANENT:
-    "Are you sure you want to delete this task permanently? This action is irreversable",
-
   AUTHENTICATION_FAILED: "Authentication failed.",
 
   UNKOWN_ERROR_OCCURED: "Something went wrong. An unknown error occurred.",
 
   UNAUTHORIZED: "You are not authorized to perform this action.",
+
+  PASSWORD_LOWERCASE: "Password must have at least one lowercase letter",
+  PASSWORD_UPPERCASE: "Password must have at least one uppercase letter",
+  PASSWORD_NUMBER: "Password must have at least one number",
+  PASSWORD_SYMBOL: "Password must have at least one symbol",
 
   HAS_TO_BE: (entity: string) =>
     `This field has to be an ${entity.toLowerCase()}`,

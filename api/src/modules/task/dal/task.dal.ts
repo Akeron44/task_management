@@ -5,13 +5,21 @@ import {
   TaskNotFoundException,
   TaskAlreadyDeletedException,
 } from '../../../common/exceptions/task.exception';
+import { ErrorDal } from 'src/common/dal/error.dal';
 
 @Injectable()
 export class TaskDal {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private errorDal: ErrorDal,
+  ) {}
 
   async create(data: Prisma.TaskCreateInput): Promise<Task> {
-    return this.prisma.task.create({ data });
+    try {
+      return await this.prisma.task.create({ data });
+    } catch (error) {
+      this.errorDal.handleError(error);
+    }
   }
 
   async findAll(params: {
@@ -20,25 +28,33 @@ export class TaskDal {
     where?: Prisma.TaskWhereInput;
     orderBy?: Prisma.TaskOrderByWithRelationInput;
   }): Promise<Task[]> {
-    const { skip, take, where, orderBy } = params;
-    return this.prisma.task.findMany({
-      skip,
-      take,
-      where: {
-        ...where,
-        deletedAt: null,
-      },
-      orderBy,
-    });
+    try {
+      const { skip, take, where, orderBy } = params;
+      return await this.prisma.task.findMany({
+        skip,
+        take,
+        where: {
+          ...where,
+          deletedAt: null,
+        },
+        orderBy,
+      });
+    } catch (error) {
+      this.errorDal.handleError(error);
+    }
   }
 
   async findOne(where: Prisma.TaskWhereUniqueInput): Promise<Task | null> {
-    return this.prisma.task.findFirst({
-      where: {
-        ...where,
-        deletedAt: null,
-      },
-    });
+    try {
+      return await this.prisma.task.findFirst({
+        where: {
+          ...where,
+          deletedAt: null,
+        },
+      });
+    } catch (error) {
+      this.errorDal.handleError(error);
+    }
   }
 
   async update(params: {
@@ -56,12 +72,7 @@ export class TaskDal {
         where,
       });
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        if (error.code === 'P2025') {
-          throw new TaskNotFoundException(where.id as string);
-        }
-      }
-      throw error;
+      this.errorDal.handleError(error);
     }
   }
 
@@ -81,36 +92,39 @@ export class TaskDal {
         },
       });
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        if (error.code === 'P2025') {
-          throw new TaskNotFoundException(where.id as string);
-        }
-      }
-      throw error;
+      this.errorDal.handleError(error);
     }
   }
 
   async restore(where: Prisma.TaskWhereUniqueInput): Promise<Task> {
-    const task = await this.prisma.task.findFirst({
-      where: {
-        ...where,
-        deletedAt: { not: null },
-      },
-    });
-    if (!task) {
-      throw new Error('Deleted task not found');
+    try {
+      const task = await this.prisma.task.findFirst({
+        where: {
+          ...where,
+          deletedAt: { not: null },
+        },
+      });
+      if (!task) {
+        throw new Error('Deleted task not found');
+      }
+      return this.prisma.task.update({
+        where,
+        data: {
+          deletedAt: null,
+        },
+      });
+    } catch (error) {
+      this.errorDal.handleError(error);
     }
-    return this.prisma.task.update({
-      where,
-      data: {
-        deletedAt: null,
-      },
-    });
   }
 
   async hardDelete(where: Prisma.TaskWhereUniqueInput): Promise<Task> {
-    return this.prisma.task.delete({
-      where,
-    });
+    try {
+      return await this.prisma.task.delete({
+        where,
+      });
+    } catch (error) {
+      this.errorDal.handleError(error);
+    }
   }
 }

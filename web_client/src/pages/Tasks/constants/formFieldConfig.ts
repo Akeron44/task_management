@@ -1,24 +1,27 @@
-export const formItems = [
-  { label: "Title", name: "title", help: "title", type: "text" },
-  {
+export const FORMINPUT = {
+  TITLE: {
+    name: "title" as const,
+    label: "Title",
+    type: "text",
+  },
+  DESCRIPTION: {
+    name: "description" as const,
     label: "Description",
-    name: "description",
-    help: "description",
     type: "text",
   },
-  {
+  STATUS: {
+    name: "status" as const,
     label: "Status",
-    help: "status",
-    name: "status",
-    type: "text",
-    options: ["PENDING", "IN_PROGRESS", "COMPLETED", "CANCELLED"],
+    type: "select",
   },
-  {
+  PRIORITY: {
+    name: "priority" as const,
     label: "Priority",
-    help: "priority",
-    type: "text",
-    name: "priority",
-    options: ["LOW", "MEDIUM", "HIGH"],
+    type: "select",
   },
-  { label: "Deadline", help: "date", name: "dueDate", type: "date" },
-];
+  DUEDATE: {
+    name: "dueDate" as const,
+    label: "Deadline",
+    type: "Date",
+  },
+};

@@ -2,12 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { TaskDal } from './dal/task.dal';
-import { Priority, TaskStatus } from '@prisma/client';
 import {
   TaskNotFoundException,
   TaskUnauthorizedException,
 } from '../../common/exceptions/task.exception';
-import { error_messages } from 'src/common/constants/error-messages';
 
 @Injectable()
 export class TaskService {
@@ -22,7 +20,7 @@ export class TaskService {
     });
   }
 
-  findAll(userId: string) {
+  findAll() {
     return this.taskDal.findAll({
       where: { deletedAt: null },
     });
@@ -56,67 +54,6 @@ export class TaskService {
     return this.taskDal.softDelete({ id });
   }
 
-  async getMyTaskStats(userId: string) {
-    const tasks = await this.taskDal.findAll({
-      where: { userId },
-    });
-
-    return {
-      total: tasks.length,
-      byStatus: {
-        [TaskStatus.PENDING]: tasks.filter(
-          (t) => t.status === TaskStatus.PENDING,
-        ).length,
-        [TaskStatus.IN_PROGRESS]: tasks.filter(
-          (t) => t.status === TaskStatus.IN_PROGRESS,
-        ).length,
-        [TaskStatus.COMPLETED]: tasks.filter(
-          (t) => t.status === TaskStatus.COMPLETED,
-        ).length,
-        [TaskStatus.CANCELLED]: tasks.filter(
-          (t) => t.status === TaskStatus.CANCELLED,
-        ).length,
-      },
-      byPriority: {
-        [Priority.LOW]: tasks.filter((t) => t.priority === Priority.LOW).length,
-        [Priority.MEDIUM]: tasks.filter((t) => t.priority === Priority.MEDIUM)
-          .length,
-        [Priority.HIGH]: tasks.filter((t) => t.priority === Priority.HIGH)
-          .length,
-      },
-    };
-  }
-  async getTaskStats(userId: string) {
-    const tasks = await this.taskDal.findAll({
-      where: { userId: { not: userId } },
-    });
-
-    return {
-      total: tasks.length,
-      byStatus: {
-        [TaskStatus.PENDING]: tasks.filter(
-          (t) => t.status === TaskStatus.PENDING,
-        ).length,
-        [TaskStatus.IN_PROGRESS]: tasks.filter(
-          (t) => t.status === TaskStatus.IN_PROGRESS,
-        ).length,
-        [TaskStatus.COMPLETED]: tasks.filter(
-          (t) => t.status === TaskStatus.COMPLETED,
-        ).length,
-        [TaskStatus.CANCELLED]: tasks.filter(
-          (t) => t.status === TaskStatus.CANCELLED,
-        ).length,
-      },
-      byPriority: {
-        [Priority.LOW]: tasks.filter((t) => t.priority === Priority.LOW).length,
-        [Priority.MEDIUM]: tasks.filter((t) => t.priority === Priority.MEDIUM)
-          .length,
-        [Priority.HIGH]: tasks.filter((t) => t.priority === Priority.HIGH)
-          .length,
-      },
-    };
-  }
-
   async restore(id: string, userId: string) {
     // First check if the task belongs to the user
     const task = await this.taskDal.findOne({ id });
@@ -126,7 +63,6 @@ export class TaskService {
     return this.taskDal.restore({ id });
   }
 
-  // Optional: Add hard delete if needed
   async hardDelete(id: string, userId: string) {
     await this.findOne(id, userId);
     return this.taskDal.hardDelete({ id });

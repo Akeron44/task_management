@@ -1,31 +1,15 @@
-import { Button, Form, Input, Spin } from "antd";
-import { Controller, useForm } from "react-hook-form";
+import { Button, Form, Spin } from "antd";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import styles from "./Signup.module.css";
-import {
-  UserOutlined,
-  LockOutlined,
-  MailOutlined,
-  IdcardOutlined,
-  LoadingOutlined,
-} from "@ant-design/icons";
+import { LoadingOutlined } from "@ant-design/icons";
 import { schema } from "./helpers/validateForm";
 import useSignup from "./hooks/useSignup";
-import { SignupAuthentication } from "./types/SignupAuthenticator";
 import { SignupCredentials } from "./services/signupService";
-import ErrorComponent from "../../components/Error/ErrorComponent";
-
-const formItems = [
-  { label: "Name", help: "name", type: "text", icon: <UserOutlined /> },
-  { label: "Age", help: "age", type: "number", icon: <IdcardOutlined /> },
-  { label: "Email", help: "email", type: "text", icon: <MailOutlined /> },
-  {
-    label: "Password",
-    help: "password",
-    type: "password",
-    icon: <LockOutlined />,
-  },
-];
+import EmailInput from "./components/EmailInput/EmailInput";
+import PasswordInput from "./components/PasswordInput/PasswordInput";
+import AgeInput from "./components/AgeInput/AgeInput";
+import NameInput from "./components/NameInput/NameInput";
 
 function Signup() {
   const {
@@ -34,22 +18,7 @@ function Signup() {
     control,
   } = useForm<SignupCredentials>({ resolver: zodResolver(schema) });
 
-  const { mutate, error, isPending } = useSignup();
-
-  const handleChange =
-    (
-      field: {
-        onChange: (value: string | number) => void;
-      },
-      itemType: string
-    ) =>
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (itemType === "number") {
-        field.onChange(e.target.valueAsNumber);
-      } else {
-        field.onChange(e.target.value);
-      }
-    };
+  const { mutate, isPending } = useSignup();
 
   const onSubmit = (form: SignupCredentials) => {
     mutate({
@@ -62,44 +31,20 @@ function Signup() {
 
   return (
     <div className={styles.loginContainer}>
-      {error && <ErrorComponent message={error.message} />}
       {isPending && <Spin indicator={<LoadingOutlined />} />}
       <h1 className={styles.title}>Welcome</h1>
       <p className={styles.subtitle}>Create your account</p>
 
-      <Form
+      <form
         name="basic"
         className={styles.form}
-        initialValues={{ remember: true }}
-        onFinish={handleSubmit(onSubmit)}
+        onSubmit={handleSubmit(onSubmit)}
         autoComplete="off"
       >
-        {formItems.map((item) => (
-          <Form.Item<SignupAuthentication>
-            key={item.help}
-            validateStatus={
-              errors[item.help as keyof SignupAuthentication] ? "error" : ""
-            }
-            help={errors[item.help as keyof SignupAuthentication]?.message}
-          >
-            <Controller
-              name={item.help as keyof SignupAuthentication}
-              control={control}
-              defaultValue=""
-              render={({ field }) => (
-                <Input
-                  {...field}
-                  type={item.type}
-                  onChange={handleChange(field, item.type)}
-                  className={styles.input}
-                  size="large"
-                  placeholder={item.label}
-                  prefix={item.icon}
-                />
-              )}
-            />
-          </Form.Item>
-        ))}
+        <NameInput control={control} errors={errors} />
+        <AgeInput control={control} errors={errors} />
+        <EmailInput control={control} errors={errors} />
+        <PasswordInput control={control} errors={errors} />
         <Form.Item>
           <Button
             type="primary"
@@ -111,7 +56,7 @@ function Signup() {
             Create account
           </Button>
         </Form.Item>
-      </Form>
+      </form>
     </div>
   );
 }

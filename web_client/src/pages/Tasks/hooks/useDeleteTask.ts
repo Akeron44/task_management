@@ -6,6 +6,8 @@ import taskService from "../services/taskService";
 import error_messages from "../../../constants/error_messages";
 import queryKeys from "../../../constants/queryKeys";
 import { Task } from "../types/TaskInterfaces";
+import { openNotification } from "../../../helpers/handleNotification";
+import { messages } from "../../../constants/messages";
 
 const useDeleteTask = () => {
   const queryClient = useQueryClient();
@@ -22,6 +24,11 @@ const useDeleteTask = () => {
       return task;
     },
     onSuccess: () => {
+      openNotification({
+        type: "success",
+        title: "Task deleted",
+        message: messages.TASK_DELETED_SUCCESS,
+      });
       setTimeout(() => {
         if (location.pathname !== `${routes.ROOT}${routes.TASKS}`) {
           navigate(`${routes.ROOT}${routes.TASKS}`);
@@ -30,11 +37,12 @@ const useDeleteTask = () => {
       queryClient.invalidateQueries({
         queryKey: [queryKeys.TASKS],
       });
-      queryClient.invalidateQueries({
-        queryKey: [queryKeys.TASKS_STATISTICS],
-      });
-      queryClient.invalidateQueries({
-        queryKey: [queryKeys.TASKS_MY_STATISTICS],
+    },
+    onError: (error) => {
+      openNotification({
+        type: "error",
+        title: "Error",
+        message: error.message,
       });
     },
   });

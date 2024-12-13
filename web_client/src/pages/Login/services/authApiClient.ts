@@ -1,9 +1,10 @@
 import axios from "axios";
 import { processAxiosError } from "../../../helpers/apiErrorHelper";
 import { UserResponse } from "../types/LoginCredentials";
+import endpoints from "../../../constants/endpoints";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:4000",
+  baseURL: endpoints.BASE_URL,
 });
 
 class APIClient<T> {

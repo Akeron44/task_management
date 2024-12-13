@@ -6,8 +6,8 @@ import {
 import { LoginUserDto } from './dto/login-user.dto';
 import { AuthHelper } from './helpers/auth.helper';
 import { SignupUserDto } from './dto/signup-user.dto';
-import { UserDal } from '../user/dal/user.dal';
 import { error_messages } from 'src/common/constants/error-messages';
+import { UserDal } from '../user/dal/user.dal';
 
 @Injectable()
 export class AuthService {
@@ -33,15 +33,15 @@ export class AuthService {
       age: user.age,
     });
 
-    const {
-      password: userPassword,
-      deletedAt,
-      updatedAt,
-      createdAt,
-      ...results
-    } = user;
+    const response = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      age: user.age,
+      token,
+    };
 
-    return { ...results, token };
+    return response;
   }
 
   async signup(signupUserDto: SignupUserDto) {
@@ -66,14 +66,14 @@ export class AuthService {
       age: newUser.age,
     });
 
-    const {
-      password: userPassword,
-      deletedAt,
-      createdAt,
-      updatedAt,
-      ...results
-    } = newUser;
+    const response = {
+      id: newUser.id,
+      name: newUser.name,
+      email: newUser.email,
+      age: newUser.age,
+      token,
+    };
 
-    return { ...results, token };
+    return response;
   }
 }
