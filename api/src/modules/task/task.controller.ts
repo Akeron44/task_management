@@ -21,6 +21,11 @@ import { controller_path } from 'src/common/constants/controller-path';
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
+  @Get()
+  test() {
+    return 'Hello';
+  }
+
   @Post()
   create(@Body() createTaskDto: CreateTaskDto, @Req() req: Request) {
     return this.taskService.create(createTaskDto, req.user['id']);
